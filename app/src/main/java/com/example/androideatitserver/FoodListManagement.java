@@ -147,7 +147,14 @@ public class FoodListManagement extends AppCompatActivity {
 
     private void fabTambahMenuByOrder(String keyFood) {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(keyFood);
+        LayoutInflater headerInflater = getLayoutInflater();
+        View header = headerInflater.inflate(R.layout.header_dialog, null);
+        TextView headerText = header.findViewById(R.id.textheader);
+        headerText.setText(keyFood);
+        alertDialog.setCustomTitle(header);
+        LayoutInflater contentInflater = this.getLayoutInflater();
+        View content = contentInflater.inflate(R.layout.add_modify_menu_layout, null);
+        alertDialog.setView(content);
         alertDialog.show();
     }
 
