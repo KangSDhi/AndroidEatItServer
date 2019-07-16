@@ -40,8 +40,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.UUID;
@@ -145,8 +143,9 @@ public class FoodListManagement extends AppCompatActivity {
         recyclerView.addItemDecoration(new LinearDecoration(padding));
     }
 
-    private void fabTambahMenuByOrder(String keyFood) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+    private void fabTambahMenuByOrder(final String keyFood) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setCancelable(false);
         LayoutInflater headerInflater = getLayoutInflater();
         View header = headerInflater.inflate(R.layout.header_dialog, null);
         TextView headerText = header.findViewById(R.id.textheader);
@@ -154,8 +153,297 @@ public class FoodListManagement extends AppCompatActivity {
         alertDialog.setCustomTitle(header);
         LayoutInflater contentInflater = this.getLayoutInflater();
         View content = contentInflater.inflate(R.layout.add_modify_menu_layout, null);
+        LayNamaMakanan = content.findViewById(R.id.layNamaMakanan);
+        LayKategori = content.findViewById(R.id.layKategori);
+        LayHarga = content.findViewById(R.id.layHarga);
+        LayDiskon = content.findViewById(R.id.layDiskon);
+        LayDeskripsi = content.findViewById(R.id.layDeskripsi);
+        EdtNamaMakanan = content.findViewById(R.id.edtNamaMakanan);
+        EdtKategori = content.findViewById(R.id.edtKategori);
+        EdtHarga = content.findViewById(R.id.edtHarga);
+        EdtDiskon = content.findViewById(R.id.edtDiskon);
+        EdtDeskripsi = content.findViewById(R.id.edtDeskripsi);
+        BtnSelect = content.findViewById(R.id.btnSelect);
+        BtnUpload = content.findViewById(R.id.btnUpload);
+        BtnTambah = content.findViewById(R.id.btnTambah);
+        BtnBatal = content.findViewById(R.id.btnBatal);
+
+        LayKategori.setVisibility(View.GONE);
+
+        BtnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pilihGambar();
+            }
+        });
+
+        BtnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                unggahGambar(keyFood);
+            }
+        });
+
+        BtnTambah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String NamaMakanan = EdtNamaMakanan.getText().toString();
+                String Kategori = keyFood;
+                String Harga = EdtHarga.getText().toString();
+                String Diskon = EdtDiskon.getText().toString();
+                String Deskripsi = EdtDeskripsi.getText().toString();
+
+
+                if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.5.1
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty()){
+                    //C5.4.1
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.4.2
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.4.3
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.4.4
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.4.5
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty()){
+                    //C5.3.1
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Diskon.isEmpty()){
+                    //C5.3.2
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.3
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Harga.isEmpty() && Diskon.isEmpty()){
+                    //C5.3.4
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Harga.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.5
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.6
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty()){
+                    //C5.3.7
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (Kategori.isEmpty() && Harga.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.8
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Kategori.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.9
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.3.10
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty() && Kategori.isEmpty()){
+                    //C5.2.1
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Harga.isEmpty()){
+                    //C5.2.2
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Diskon.isEmpty()){
+                    //C5.2.3
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (NamaMakanan.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.2.4
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Kategori.isEmpty() && Harga.isEmpty()){
+                    //C5.2.5
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (Kategori.isEmpty() && Diskon.isEmpty()){
+                    //C5.2.6
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (Kategori.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.2.7
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Harga.isEmpty() && Diskon.isEmpty()){
+                    //C5.2.8
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (Harga.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.2.9
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (Diskon.isEmpty() && Deskripsi.isEmpty()){
+                    //C5.2.10
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                } else if (NamaMakanan.isEmpty()){
+                    //C5.1.1
+                    LayNamaMakanan.setError("Form Nama Makanan Kosong!");
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (Kategori.isEmpty()){
+                    //C5.1.2
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError("Form Kategori Kosong!");
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (Harga.isEmpty()){
+                    //C5.1.3
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError("Form Harga Kosong!");
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                } else if (Diskon.isEmpty()){
+                    //C5.1.4
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError("Form Diskon Kosong!");
+                    LayDeskripsi.setError(null);
+                } else if (Deskripsi.isEmpty()){
+                    //C5.1.5
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError("Form Deskripsi Kosong!");
+                }else {
+                    LayNamaMakanan.setError(null);
+                    LayKategori.setError(null);
+                    LayHarga.setError(null);
+                    LayDiskon.setError(null);
+                    LayDeskripsi.setError(null);
+                    //Toast.makeText(FoodListManagement.this, "Oke", Toast.LENGTH_SHORT).show();
+                    intDiskon = Integer.parseInt(Diskon);
+                    if (intDiskon > 100){
+                        Toast.makeText(FoodListManagement.this, "Diskon Tidak Valid!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        if (modelMakanan != null){
+                            alertDialog.dismiss();
+                            //....................
+                        }
+                    }
+                }
+            }
+        });
+
+        BtnBatal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
         alertDialog.setView(content);
         alertDialog.show();
+    }
+
+    private void unggahGambarByOrder() {
+
     }
 
 
@@ -231,7 +519,7 @@ public class FoodListManagement extends AppCompatActivity {
         BtnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                unggahGambar();
+                unggahGambar("");
             }
         });
 
@@ -517,8 +805,41 @@ public class FoodListManagement extends AppCompatActivity {
         dialog.show();
     }
 
-    private void unggahGambar() {
-        if (saveUri != null){
+    private void unggahGambar(String keyFood) {
+        if (saveUri != null && !keyFood.isEmpty()){
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Mengunggah....");
+            progressDialog.show();
+
+            String imageName = UUID.randomUUID().toString();
+            final StorageReference imageFolder = storageReference.child("gambarMakanan/"+imageName);
+            imageFolder.putFile(saveUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(FoodListManagement.this, "Gambar Terunggah!", Toast.LENGTH_SHORT).show();
+                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        }
+                    });
+        }else {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Mengunggah....");
             progressDialog.show();
