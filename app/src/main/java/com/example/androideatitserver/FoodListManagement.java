@@ -424,7 +424,8 @@ public class FoodListManagement extends AppCompatActivity {
                     }else {
                         if (modelMakanan != null){
                             alertDialog.dismiss();
-                            //....................
+                            databaseReference.push().setValue(modelMakanan);
+                            Toast.makeText(FoodListManagement.this, "ok sip!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -441,11 +442,6 @@ public class FoodListManagement extends AppCompatActivity {
         alertDialog.setView(content);
         alertDialog.show();
     }
-
-    private void unggahGambarByOrder() {
-
-    }
-
 
     private void memuatListMenu() {
 
@@ -805,7 +801,7 @@ public class FoodListManagement extends AppCompatActivity {
         dialog.show();
     }
 
-    private void unggahGambar(String keyFood) {
+    private void unggahGambar(final String keyFood) {
         if (saveUri != null && !keyFood.isEmpty()){
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Mengunggah....");
@@ -822,7 +818,18 @@ public class FoodListManagement extends AppCompatActivity {
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-
+                                    Double Harga = Double.parseDouble(EdtHarga.getText().toString());
+                                    Double doubleDiskon = Double.parseDouble(EdtDiskon.getText().toString()) / 100;
+                                    Double HargaDiskon = Harga - (Harga * doubleDiskon);
+                                    modelMakanan = new ModelMakanan(
+                                      EdtNamaMakanan.getText().toString(),
+                                      keyFood,
+                                      EdtHarga.getText().toString(),
+                                      String.format("%.0f",HargaDiskon),
+                                      uri.toString(),
+                                      EdtDeskripsi.getText().toString(),
+                                      EdtDiskon.getText().toString()
+                                    );
                                 }
                             });
                         }
@@ -830,13 +837,15 @@ public class FoodListManagement extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
+                            progressDialog.dismiss();
+                            Toast.makeText(FoodListManagement.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
+                            double proses = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Mengunggah "+proses+" %");
                         }
                     });
         }else {
