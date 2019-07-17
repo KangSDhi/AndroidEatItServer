@@ -129,7 +129,7 @@ public class FoodListManagement extends AppCompatActivity {
                 ModelMakanan.class,
                 R.layout.item_r_food_list_m,
                 FoodListMViewHolder.class,
-                databaseReference.orderByChild("MenuId").equalTo(keyFood)
+                databaseReference.orderByChild("menuId").equalTo(keyFood)
         ) {
             @Override
             protected void populateViewHolder(FoodListMViewHolder foodListMViewHolder, ModelMakanan modelMakanan, int i) {
