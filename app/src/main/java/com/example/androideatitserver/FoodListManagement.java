@@ -193,7 +193,6 @@ public class FoodListManagement extends AppCompatActivity {
                 String Diskon = EdtDiskon.getText().toString();
                 String Deskripsi = EdtDeskripsi.getText().toString();
 
-
                 if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
                     //C5.5.1
                     LayNamaMakanan.setError("Form Nama Makanan Kosong!");
@@ -425,7 +424,7 @@ public class FoodListManagement extends AppCompatActivity {
                         if (modelMakanan != null){
                             alertDialog.dismiss();
                             databaseReference.push().setValue(modelMakanan);
-                            Toast.makeText(FoodListManagement.this, "ok sip!", Toast.LENGTH_SHORT).show();
+                            returnResult(modelMakanan, Harga, Diskon);
                         }
                     }
                 }
