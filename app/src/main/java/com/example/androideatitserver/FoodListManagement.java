@@ -132,9 +132,16 @@ public class FoodListManagement extends AppCompatActivity {
                 databaseReference.orderByChild("menuId").equalTo(keyFood)
         ) {
             @Override
-            protected void populateViewHolder(FoodListMViewHolder foodListMViewHolder, ModelMakanan modelMakanan, int i) {
+            protected void populateViewHolder(FoodListMViewHolder foodListMViewHolder, final ModelMakanan modelMakanan, int i) {
                 Picasso.get().load(modelMakanan.getGambar()).into(foodListMViewHolder.ImgMakanan);
                 foodListMViewHolder.TextMakanan.setText(modelMakanan.getNama());
+
+                foodListMViewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        Toast.makeText(FoodListManagement.this, ""+modelMakanan.getNama(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         };
         recyclerView.setAdapter(adapter);
@@ -167,6 +174,8 @@ public class FoodListManagement extends AppCompatActivity {
         BtnUpload = content.findViewById(R.id.btnUpload);
         BtnTambah = content.findViewById(R.id.btnTambah);
         BtnBatal = content.findViewById(R.id.btnBatal);
+
+        EdtDiskon.setText("0");
 
         LayKategori.setVisibility(View.GONE);
 
@@ -465,6 +474,8 @@ public class FoodListManagement extends AppCompatActivity {
                 foodListMViewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position) {
+                        Intent intent = new Intent(FoodListManagement.this, FoodDetailManagement.class);
+                        startActivity(intent);
                         Toast.makeText(FoodListManagement.this, ""+modelMakanan.getNama(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -527,8 +538,6 @@ public class FoodListManagement extends AppCompatActivity {
                 String Harga = EdtHarga.getText().toString();
                 String Diskon = EdtDiskon.getText().toString();
                 String Deskripsi = EdtDeskripsi.getText().toString();
-
-
 
                 if (NamaMakanan.isEmpty() && Kategori.isEmpty() && Harga.isEmpty() && Diskon.isEmpty() && Deskripsi.isEmpty()){
                     //C5.5.1
